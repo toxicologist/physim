@@ -10,16 +10,15 @@ Basic physics simulation in Python
 
 import pygame
 
-from pygame.locals import *
+import random
 
-from lib.vector import Vector
+from pygame.locals import *
 
 import math
 
 from math import radians
 
 w, h = 1000, 1000
-speed_vector = Vector(45, 1)
 
 GREEN = (0, 255, 60)
 
@@ -57,17 +56,21 @@ def sin(n):
 
 
 def draw_line(start, end, w=1):
-    return pygame.draw.line(display, GREEN, start, end, w)
+    return pygame.draw.aaline(display, GREEN, start, end, w)
 
 
 def cool_animation_thingy():
     global n
     global inc
+    upper = 1.5
+    lower = 1
     n *= inc
 
-    if n > 1.5 or n < 1:
+    if n > upper or n < lower:
        inc = 1/inc
-       n *= inc
+       n = n ** inc
+       #n = lower
+
 
     #print(n)
 
@@ -76,37 +79,55 @@ def cool_animation_thingy():
         draw_line((center[0] + line_length / mult, center[1] + line_length / mult), (center[0] - line_length / mult, center[1] + line_length / mult))
 
 
-def get_extremities(degree_increment):
+def get_extremities(degree_increment, line_length=line_length):
     line_extremities = []
 
     for i in range(math.ceil(360 / degree_increment)):
+        deg = degree_increment * i
+
+        #if 0 <= deg <= 45 or 135 <= deg <= 225 or deg == 315:
 
         deg = radians(degree_increment * i)
-        line_extremities.append(((center[0] + line_length * cos(deg)), math.ceil(center[1] + line_length * sin(deg))))
+        line_extremities.append((math.ceil(center[0] + line_length * cos(deg)), math.ceil(center[1] - line_length * sin(deg))))
 
     return line_extremities
 
 
+def draw_line_dots(deg_inc, times=5, offset=0):
+    phi = (1 + math.sqrt(5)) / 2
+    l = line_length
+
+    for i in range(times):
+        l = math.ceil(l / phi)
+        for e in get_extremities(deg_inc, line_length=l + offset):
+            pygame.draw.circle(display, GREEN, e, 2)
+
+
 # cool animation 2
 d = 1
-d_inc = 0.8
+d_inc = 0.1
 
 
 def cool_animation_2():
     global d
     global d_inc
 
+    lower = 1
+    upper = 35
+
     d += d_inc
-    if d > 35 or d < 1:
+    if d > 7 or d < 0.3:
         d_inc = -d_inc
         d += d_inc
 
     for e in get_extremities(d):
         draw_line(e, center)
 
+    draw_line_dots(d)
+
 
 while running:
-    clock.tick(25)
+    clock.tick(35)
     display.fill((0,0,0))
 
     cool_animation_thingy()
@@ -121,6 +142,10 @@ while running:
     #ex = get_extremities(45)
     #for e in ex:
     #    draw_line(e, center)
+
+
+
+
 
     for event in pygame.event.get():  # event loop
         if event.type == pygame.QUIT:
