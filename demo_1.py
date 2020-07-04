@@ -1,12 +1,4 @@
-"""
-
-Basic physics simulation in Python
-
--pygame for visual rendering
--vectors for forces
--etc..
-
-"""
+# cool demo
 
 import pygame
 
