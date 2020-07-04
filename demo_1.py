@@ -115,7 +115,7 @@ def cool_animation_2():
     for e in get_extremities(d):
         draw_line(e, center)
 
-    draw_line_dots(d)
+    draw_line_dots(d, offset=d*random.randint(98,100)/10)
 
 
 while running:
