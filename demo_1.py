@@ -22,18 +22,17 @@ display = pygame.display.set_mode((w, h), RESIZABLE)
 surf = pygame.Surface((w, h))
 clock = pygame.time.Clock()
 
-center = [int(x/2) for x in (w,h)]
+center = [int(x / 2) for x in (w, h)]
 line_length = int(w / 2.5)
-
 
 # cool animation thingy
 n = 1
 inc = 1.01
 
 
-def fround(n): # fix shitty float precision
+def fround(n):  # fix shitty float precision
     small_float = 0.000001
-    if n > 0 and n < small_float or n < 0 and n > -small_float:
+    if 0 < n < small_float or 0 > n > -small_float:
         return 0
     else:
         return n
@@ -59,16 +58,16 @@ def cool_animation_thingy():
     n *= inc
 
     if n > upper or n < lower:
-       inc = 1/inc
-       n = n ** inc
-       #n = lower
+        inc = 1 / inc
+        n = n ** inc
+        # n = lower
 
+    # print(n)
 
-    #print(n)
-
-    for i in range(25):
+    for i in range(100):
         mult = n ** i
-        draw_line((center[0] + line_length / mult, center[1] + line_length / mult), (center[0] - line_length / mult, center[1] + line_length / mult))
+        draw_line((center[0] + line_length / mult, center[1] + line_length / mult),
+                  (center[0] - line_length / mult, center[1] + line_length / mult))
 
 
 def get_extremities(degree_increment, line_length=line_length):
@@ -77,10 +76,9 @@ def get_extremities(degree_increment, line_length=line_length):
     for i in range(math.ceil(360 / degree_increment)):
         deg = degree_increment * i
 
-        #if 0 <= deg <= 45 or 135 <= deg <= 225 or deg == 315:
-
-        deg = radians(degree_increment * i)
-        line_extremities.append((math.ceil(center[0] + line_length * cos(deg)), math.ceil(center[1] - line_length * sin(deg))))
+        deg = radians(deg)
+        line_extremities.append(
+            (math.ceil(center[0] + line_length * cos(deg)), math.ceil(center[1] - line_length * sin(deg))))
 
     return line_extremities
 
@@ -115,12 +113,12 @@ def cool_animation_2():
     for e in get_extremities(d):
         draw_line(e, center)
 
-    draw_line_dots(d, offset=d*random.randint(98,100)/10)
+    draw_line_dots(d, offset=d * random.randint(98, 100) / 10)
 
 
 while running:
     clock.tick(35)
-    display.fill((0,0,0))
+    display.fill((0, 0, 0))
 
     cool_animation_thingy()
     cool_animation_2()
@@ -133,11 +131,8 @@ while running:
 
     #ex = get_extremities(45)
     #for e in ex:
-    #    draw_line(e, center)
-
-
-
-
+    #    draw_line(center, e)
+    #    draw_line_dots(45, 10)
 
     for event in pygame.event.get():  # event loop
         if event.type == pygame.QUIT:
